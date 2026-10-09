@@ -91,8 +91,9 @@ export async function getRoomMarket(room: Room) {
 export function buyEligibility(room: Room, market: Awaited<ReturnType<typeof getRoomMarket>>) {
   const now = Date.now();
   if (room.demo) return "Demo room: no real market is mapped";
+  if (!room.published || !room.reviewed) return "Room is awaiting host review";
+  if (!room.pantaMarketId) return "No Panta market is mapped to this room";
   if (!tradingEnabled) return "Trading is not configured";
-  if (!room.published || !room.reviewed || !room.pantaMarketId) return "Market mapping is awaiting review";
   if (room.tradingPaused) return "Trading is paused by the host";
   if (now >= new Date(room.cutoffAt).getTime() || now >= new Date(room.kickoffAt).getTime()) return "Predictions closed before kickoff";
   if (!market) return "Panta market is unavailable";

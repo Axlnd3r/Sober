@@ -48,14 +48,16 @@ test("live auth, admin permission, one forecast per wallet, and cutoff enforce D
   const kickoff = new Date(Date.now() + 2 * 60 * 60_000);
   const cutoff = new Date(kickoff.getTime() - 5 * 60_000);
   try {
-    await client.query(`INSERT INTO rooms(id,competition,home_team,away_team,kickoff_at,fixture_source_url,brief,cutoff_at,published,reviewed)
-      VALUES($1,'Integration test','Test Home','Test Away',$2,'https://example.com/fixture','Test room',$3,true,true)`, [roomId, kickoff, cutoff]);
+    await client.query(`INSERT INTO rooms(id,competition,home_team,away_team,kickoff_at,fixture_source_url,brief,question,resolution_rule,sources,cutoff_at,published,reviewed)
+      VALUES($1,'Integration test','Test Home','Test Away',$2,'https://example.com/fixture','Test room','Will Test Home beat Test Away in regular time?','YES for a Test Home win after regular time; NO for a draw or Test Away win.',$3::jsonb,$4,false,false)`, [roomId, kickoff, JSON.stringify(["https://example.com/result"]), cutoff]);
     const fan = await signIn(fanKeypair);
     assert.equal(fan.admin, false);
     const replay = await request("/api/auth/verify", "POST", { nonceId: fan.nonceId, signature: fan.signature });
     assert.equal(replay.response.status, 400, "nonce cannot be consumed twice");
     const fanAdmin = await request("/api/admin/rooms", "GET", undefined, fan.cookie);
     assert.equal(fanAdmin.response.status, 403);
+    const fanReview = await request(`/api/admin/rooms/${roomId}`, "PATCH", { action: "review" }, fan.cookie);
+    assert.equal(fanReview.response.status, 403);
     const fanImport = await request("/api/admin/fixtures", "POST", { providerId: 1 }, fan.cookie);
     assert.equal(fanImport.response.status, 403);
 
@@ -63,6 +65,20 @@ test("live auth, admin permission, one forecast per wallet, and cutoff enforce D
     assert.equal(admin.admin, true, "test server must allowlist the printed admin wallet");
     const adminRooms = await request("/api/admin/rooms", "GET", undefined, admin.cookie);
     assert.equal(adminRooms.response.status, 200);
+    const prematurePublish = await request(`/api/admin/rooms/${roomId}`, "PATCH", { action: "publish" }, admin.cookie);
+    assert.equal(prematurePublish.response.status, 400, "drafts cannot be published before review");
+    const review = await request(`/api/admin/rooms/${roomId}`, "PATCH", { action: "review" }, admin.cookie);
+    assert.equal(review.response.status, 200, JSON.stringify(review.json));
+    assert.equal(review.json.data.reviewed, true);
+    const prematureTrading = await request(`/api/admin/rooms/${roomId}`, "PATCH", { action: "pause", paused: false }, admin.cookie);
+    assert.equal(prematureTrading.response.status, 400, "unmapped rooms cannot resume trading");
+    const publish = await request(`/api/admin/rooms/${roomId}`, "PATCH", { action: "publish" }, admin.cookie);
+    assert.equal(publish.response.status, 200, JSON.stringify(publish.json));
+    assert.equal(publish.json.data.published, true);
+    const freeRoom = await request(`/api/rooms/${roomId}`);
+    assert.equal(freeRoom.response.status, 200);
+    assert.equal(freeRoom.json.data.market, null);
+    assert.equal(freeRoom.json.data.buyUnavailableReason, "No Panta market is mapped to this room");
     const importedFixtures = await request("/api/admin/fixtures", "GET", undefined, admin.cookie);
     assert.equal(importedFixtures.response.status, 200);
     if (!process.env.FOOTBALL_API_KEY) {

@@ -11,6 +11,7 @@ coverage/
 # Local configuration and credentials
 .env*
 !.env.example
+.vercel/
 *.local.json
 *.secret.json
 *.pem

@@ -20,7 +20,11 @@ The local checks use Node.js 24.19 or newer, including its built-in TypeScript s
 
 `npm run demo` starts a separate fictional preview at `http://127.0.0.1:3001/matches/sample-room`; its practice forecasts stay in that browser and the live app's environment is unchanged. `npm run test:local` manages isolated test servers and runs both database/HTTP integration suites against local PostgreSQL. It uses test wallets and disables transaction features. The short [English demo script](docs/demo-script.md) describes what can be demonstrated honestly now.
 
+The [silent 126-second hackathon film](docs/demo-video/sober-panta-demo-v2.mp4) has an original football opening and an on-screen explanation of Sober. Its buy and claim sections are labeled walkthroughs; no completed on-chain transaction is claimed. See the [video notes](docs/demo-video/README.md) for the storyboard and capture limits.
+
 For a live transaction rehearsal, run `npm run demo:preflight` before opening the local app. Add `-- --wallet <public Solana address>` to check that wallet's Panta claim eligibility without signing. The flags can be enabled individually in ignored `.env.local`; they never authorize a transaction by themselves. Follow the [live transaction demo runbook](docs/live-transaction-demo.md) for the current gates and wallet steps.
+
+To make Sober accessible to other users, follow the [public launch guide](docs/public-launch.md). Live mode now lets an admin review and publish an upcoming room for free forecasts even when no matching Panta market exists. Such a room keeps trading paused; a verified market can be mapped later. Hosting, a remote PostgreSQL database, and production environment variables still need to be provisioned.
 
 For a local database, start Docker Desktop, then run `npm run setup:local` once, `docker compose up -d db`, and `npm run db:migrate`. Setup creates ignored `.env.local` and `.env.db.local` files with a random database password. PostgreSQL listens only on `127.0.0.1:5433`. Existing environment files are never overwritten.
 

@@ -2,6 +2,7 @@
   "name": "sober",
   "version": "0.1.0",
   "private": true,
+  "engines": { "node": "24.x" },
   "scripts": {
     "dev": "next dev",
     "demo": "node scripts/preview-demo.mjs",
@@ -15,6 +16,8 @@
     "prepare:reviewed-room": "node scripts/prepare-reviewed-room.mjs",
     "probe:panta": "node scripts/probe-panta.mjs",
     "db:migrate": "node scripts/migrate.mjs",
+    "db:migrate:remote": "node scripts/migrate-remote.mjs",
+    "check:production": "node scripts/check-production.mjs",
     "verify:connections": "node scripts/verify-connections.mjs",
     "diagnose:dashboard": "node scripts/diagnose-dashboard.mjs",
     "typecheck": "tsc --noEmit",

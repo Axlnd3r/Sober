@@ -1,6 +1,7 @@
 import pg from "pg";
+import { existsSync } from "node:fs";
 
-process.loadEnvFile(".env.local");
+if (!process.argv.includes("--env-only") && existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const required = ["DATABASE_URL", "PANTA_API_KEY", "SOLANA_RPC_URL", "NEXT_PUBLIC_SOLANA_RPC_URL"];
 const missing = required.filter(name => !process.env[name]);
