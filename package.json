@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "demo": "node scripts/preview-demo.mjs",
+    "demo:preflight": "node scripts/demo-preflight.mjs",
     "build": "next build",
     "start": "next start",
     "setup:local": "node scripts/setup-local.mjs",
