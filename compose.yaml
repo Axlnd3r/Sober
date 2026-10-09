@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - .env.db.local
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - sober_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "sober", "-d", "sober"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+volumes:
+  sober_pgdata:

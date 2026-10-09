@@ -1,0 +1,11 @@
+# On-chain integration
+
+The Sober client compiles ordered Panta buy and win-claim instructions into a versioned transaction. Market creation deserializes Panta's base64 transaction. Wallet adapters sign locally. The app preserves each signature in session storage and the database before attempting broadcast, so an uncertain send does not trigger an automatic replacement.
+
+After confirmation, `src/lib/chain.ts` fetches the transaction at `confirmed` commitment. It checks the first signature and compares the serialized message byte for byte with the stored Panta build. A different message returns `mismatch` and cannot count as buy, claim, or create success. Buy success additionally requires Panta verify to report `confirmed`; claim checks Panta positions separately; create registration uses the original create ID and signature.
+
+The comparison proves that the confirmed chain transaction matches the stored build. It does not independently prove that Panta's unsigned instructions are safe. The current policy checks both RPC genesis hashes, the expected market account owner, a configured program allowlist, expected USDC mint and decimals, required market/mint references, and unexpected signers. Buy-build amounts must match the approved quote. Create builds with address lookup tables are rejected until lookup resolution is supported. The observed mainnet values and unsigned buy spike are recorded in [integration findings](integration-findings.md).
+
+These structural checks do not decode every instruction's financial meaning, destinations or balance effects. The observed program list covers the tested buy build, not every possible create/claim transaction. No signature has been confirmed in this project, and buy/claim/create flags remain disabled.
+
+Transaction state is kept separate: chain status, Panta status, position indexing, and trade attribution may arrive at different times. A missing RPC result remains pending. A confirmed signature with a different message becomes `mismatch`, not success. New signing is disabled in the browser while a recorded signature needs recovery.

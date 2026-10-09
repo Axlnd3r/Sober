@@ -1,0 +1,53 @@
+{
+  "name": "sober",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "demo": "node scripts/preview-demo.mjs",
+    "build": "next build",
+    "start": "next start",
+    "setup:local": "node scripts/setup-local.mjs",
+    "setup:panta": "node scripts/setup-panta.mjs",
+    "setup:admin-wallet": "node scripts/setup-admin-wallet.mjs",
+    "seed:manual-fixture": "node scripts/seed-manual-fixture.mjs",
+    "prepare:reviewed-room": "node scripts/prepare-reviewed-room.mjs",
+    "probe:panta": "node scripts/probe-panta.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "verify:connections": "node scripts/verify-connections.mjs",
+    "diagnose:dashboard": "node scripts/diagnose-dashboard.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "test:db": "node --test --test-isolation=none tests/database-integration.mjs",
+    "test:fixtures": "node --test --test-isolation=none tests/fixture-sync-integration.mjs",
+    "test:local": "node scripts/test-local.mjs"
+  },
+  "dependencies": {
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-phantom": "^0.9.29",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/wallet-adapter-solflare": "^0.6.33",
+    "@solana/web3.js": "^1.98.4",
+    "bs58": "^6.0.0",
+    "buffer": "^6.0.3",
+    "drizzle-orm": "^0.44.0",
+    "framer-motion": "^14.0.0",
+    "lucide-react": "^0.468.0",
+    "next": "16.3.5",
+    "pg": "^8.16.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tweetnacl": "^1.0.3",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.15.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.3"
+  }
+}

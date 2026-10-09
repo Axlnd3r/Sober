@@ -1,0 +1,25 @@
+# Dependencies and generated output
+node_modules/
+.next/
+.next-*/
+out/
+coverage/
+.playwright-mcp/
+*.tsbuildinfo
+*.log
+
+# Local configuration and credentials
+.env*
+!.env.example
+*.local.json
+*.secret.json
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
+# Operating-system files
+.DS_Store
+Thumbs.db
